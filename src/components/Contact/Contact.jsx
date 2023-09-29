@@ -1,12 +1,15 @@
 import { useDispatch } from "react-redux";
 import { MdClose } from "react-icons/md";
-import { deleteContacts } from "../../redux/contactsSlice";
+
 import { Wrapper,Text, Button} from './Contact.styled';
+import { deleteContact } from "../../redux/operations";
+
+
 
 export const Contact = ({ contact }) => {
   const dispatch = useDispatch();
 
-  const handleDelete = () => dispatch(deleteContacts(contact.id));
+  const handleDelete = () => dispatch(deleteContact(contact.id));
 
 
   return (

@@ -1,17 +1,25 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { nanoid } from "nanoid";
 import {  persistReducer } from 'redux-persist'
 import storage from 'redux-persist/lib/storage' // defaults to localStorage for web
+import { fetchContacts,addContact,deleteContact } from "./operations";
 
 
-const contactsInitialState = 
- {
+const contactsInitialState =
+{
   items: [
-    { id: 'id-1', name: 'Rosie Simpson', number: '459-12-56' },
-    { id: 'id-2', name: 'Hermione Kline', number: '443-89-12' },
-    { id: 'id-3', name: 'Eden Clements', number: '645-17-79' },
-    { id: 'id-4', name: 'Annie Copeland', number: '227-91-26' },
   ],
+
+    isLoading: false,
+    error: null
+};
+
+
+const handlePending = state => {
+  state.isLoading = true;
+};
+const handleRejected = (state, action) => {
+  state.isLoading = false;
+  state.error = action.payload;
 };
 
 
@@ -19,30 +27,41 @@ const contactsInitialState =
 const contactsSlice = createSlice({
     name: "contacts",
   initialState: contactsInitialState,
-    reducers: {
-        addContacts: {
-            reducer(state, action) {
-                state.items.push(action.payload);
-            },
-            prepare(newContact) {
-                return {
-                    payload: {
-                        id: nanoid(),
-                        name: newContact.name,
-                        number: newContact.number,
-                    },
-                };
-            },
-        },
-      
-        deleteContacts(state, action) {
-            const index = state.items.findIndex(contact => contact.id === action.payload);
-            state.items.splice(index, 1);
-        },
-    }
+ // Добавляем обработку внешних экшенов
+  extraReducers: {
+    [fetchContacts.pending]: handlePending,
+    [addContact.pending]: handlePending,
+    [deleteContact.pending]: handlePending,
+   
+    [fetchContacts.rejected]: handleRejected,
+    [addContact.rejected]: handleRejected,
+    [deleteContact.rejected]: handleRejected,
     
 
-})
+    [fetchContacts.fulfilled](state, action) {state.isLoading = false;
+      state.error = null;
+      state.items = action.payload;},
+   
+
+    [addContact.fulfilled](state, action) {
+      state.isLoading = false;
+      state.error = null;
+      state.items.push(action.payload);
+    },
+
+ 
+    [deleteContact.fulfilled](state, action) {
+      state.isLoading = false;
+      state.error = null;
+      const index = state.items.findIndex(
+        contact => contact.id === action.payload.id
+      );
+      state.items.splice(index, 1);
+    },
+
+    },
+});
+
 
 
 const persistConfig = {
@@ -53,6 +72,49 @@ const persistConfig = {
 
 
 // Экспортируем генераторы экшенов и редюсер
-export const { addContacts, deleteContacts} = contactsSlice.actions;
+
 export const contactsReducer = contactsSlice.reducer;
 export const reducerContacts = persistReducer(persistConfig, contactsReducer)
+
+
+
+
+//     reducers: {
+// // // Выполнится в момент старта HTTP-запроса
+// //     fetchingInProgress(state) {state.isLoading = true;},
+// //     // Выполнится если HTTP-запрос завершился успешно
+// //     fetchingSuccess(state, action) {state.isLoading = false;
+// //       state.error = null;
+// //       state.items = action.payload;},
+// //     // Выполнится если HTTP-запрос завершился с ошибкой
+// //         fetchingError(state, action) {
+// //             state.isLoading = false;
+// //       state.error = action.payload;
+// // },
+
+
+//         // addContacts: {
+//         //     reducer(state, action) {
+//         //         state.items.push(action.payload);
+//         //     },
+//         //     prepare(newContact) {
+//         //         return {
+//         //             payload: {
+//         //                 id: nanoid(),
+//         //                 name: newContact.name,
+//         //                 number: newContact.number,
+//         //             },
+//         //         };
+//         //     },
+//         // },
+      
+//     //     deleteContacts(state, action) {
+//     //         const index = state.items.findIndex(contact => contact.id === action.payload);
+//     //         state.items.splice(index, 1);
+//     //     },
+//     // }
+    
+
+
+// export const { fetchingInProgress, fetchingSuccess, fetchingError } =
+//   contactsSlice.actions;

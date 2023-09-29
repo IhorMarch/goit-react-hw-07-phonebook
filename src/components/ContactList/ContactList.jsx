@@ -20,11 +20,7 @@ export const ContactList = () => {
   
 // Получаем массив задач из состояния Redux
   const contacts = useSelector(getContacts);
-
- 
- const statusFilter = useSelector(getStatusFilter);
-
-
+  const statusFilter = useSelector(getStatusFilter);
   const visibleContacts = getVisibleContacts(contacts, statusFilter);
 
   

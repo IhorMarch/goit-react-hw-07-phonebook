@@ -2,11 +2,9 @@
 import React from 'react';
 import Notiflix from 'notiflix';
 import { Form, Label, Button, Input} from './ContactForm.styled';
-
+import { addContact } from "../../redux/operations";
 // Импортируем хук
 import { useDispatch,useSelector } from "react-redux";
-// Импортируем генератор экшена
-import { addContacts } from "../../redux/contactsSlice";
 import { getContacts} from "../../redux/selectors";
 
 
@@ -15,10 +13,8 @@ export const ContactForm = () => {
 
    // Получаем ссылку на функцию отправки экшенов
   const dispatch = useDispatch();
-const contacts = useSelector(getContacts);
+  const contacts = useSelector(getContacts);
 
-
-    
     const handleSubmit = event => {
         event.preventDefault();
       const form = event.target;
@@ -35,16 +31,12 @@ const contacts = useSelector(getContacts);
      if (contacts.find(newContact => newContact.name.toLowerCase() === name.toLowerCase())) {
       Notiflix.Notify.failure(`${newContact.name} is already in contacts`);
     }
-else{ dispatch(addContacts(newContact));}
+else{ dispatch(addContact(newContact));}
 
-   
 
      form.reset();
     }
    
-
-
-
 return (
             <Form onSubmit={handleSubmit}>
                 <Label>

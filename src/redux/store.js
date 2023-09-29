@@ -11,10 +11,6 @@ import {
   PURGE,
   REGISTER,
 } from 'redux-persist';
-// // Создаем расширение стора чтобы добавить инструменты разработчика
-// const enhancer = devToolsEnhancer();
-
-// export const store = createStore(rootReducer, enhancer);
 
 
 export const store = configureStore({
