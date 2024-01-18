@@ -9,7 +9,7 @@ axios.defaults.baseURL = "https://65a84931219bfa371866fcc4.mockapi.io";
 
 export const fetchContacts = createAsyncThunk("contacts/fetchAll",
    // Используем символ подчеркивания как имя первого параметра,
-  // потому что в этой операции он нам не нужен
+  // потому что в этой операции он нам не ну
 
   async (_, thunkAPI) => {
 
